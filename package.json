@@ -1,0 +1,36 @@
+{
+  "name": "niftyShelfServer",
+  "version": "0.0.1",
+  "description": "Your ERC-721 tokens... on a shelf",
+  "main": "server.js",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\" ",
+    "server": "node server.js",
+    "client": "node start-client.js",
+    "start-production": "NODE_ENV=production node server",
+    "build-client": "cd client && npm run build && cd .."
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "fs": "0.0.2",
+    "lodash": "^4.17.10",
+    "mongodb": "^2.2.36",
+    "mongoose": "^5.2.4"
+  },
+  "devDependencies": {
+    "concurrently": "3.1.0"
+  },
+  "engines": {
+    "node": "8.x"
+  },
+  "repository": {
+    "url": ""
+  },
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "glitch",
+    "express"
+  ]
+}

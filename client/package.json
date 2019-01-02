@@ -1,0 +1,24 @@
+{
+  "name": "niftShelfClient",
+  "version": "0.0.1",
+  "homepage": "https://niftyshelf.com",
+  "private": true,
+  "proxy": "http://localhost:3001/",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "dapparatus": "^1.0.45",
+    "lodash": "^4.17.11",
+    "prop-types": "^15.6.2",
+    "react": "^16.5.0",
+    "react-scripts": "1.1.5",
+    "react-share": "^2.3.1",
+    "semantic-ui-react": "^0.82.4",
+    "web3": "^1.0.0-beta.26"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

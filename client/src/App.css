@@ -1,0 +1,143 @@
+.App {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  text-align: center;
+}
+body {
+}
+.topMenu {
+  background-color: #c2cafc;
+  color: #c2cafc;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1001;
+}
+.dapparatus {
+  padding-top: 8px;
+  top: 0;
+  right: 0;
+  position: fixed;
+  z-index: 11;
+}
+.dapparatusMobile {
+  padding-top: 10px;
+  top: 0;
+  right: 1rem;
+  position: fixed;
+  z-index: 11;
+}
+.footer {
+  bottom: 0;
+  left: 0;
+  padding: 5rem;
+  background: black;
+  color: white;
+  width: 100%;
+}
+.defaultHeader {
+  top: 0;
+  background: linear-gradient(to bottom, #c2cafc, #ffffff);
+  padding-bottom: 3rem;
+}
+.homePageHeader {
+  background: #c2cafc;
+  padding-top: 5rem;
+  padding-bottom: 10rem;
+  margin-bottom: 3rem;
+}
+.homePageHeaderMobile {
+  text-align: center;
+  background: #c2cafc;
+  padding-top: 3rem;
+  padding-bottom: 10rem;
+  vertical-align: middle;
+}
+.homePageContent {
+  text-align: center;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+  background: #f4f4f4;
+}
+.homePageContentWhite {
+  text-align: center;
+  padding-bottom: 5rem;
+  padding-top: 5rem;
+  background: #ffffff;
+}
+.content {
+  flex: 1;
+}
+.progressBar {
+  width: 100%;
+  z-index: 9;
+  position: fixed;
+  opacity: 0.7;
+  padding-top: 1rem;
+}
+.dappForm {
+  padding-top: 3rem;
+  padding-bottom: 5rem;
+}
+.dappFormOption {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+  height: 100%;
+  background: linear-gradient(to bottom, #ededed, #ffffff);
+}
+.dappList {
+  overflow: auto;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  height: 400px;
+}
+
+.navigationButton {
+  background: null;
+}
+.loadingDIV {
+  background: #c2cafc;
+  -webkit-animation: colorChange 2s infinite;
+  animation: colorChange 2s infinite;
+  padding-bottom: 8em;
+  padding-top: 8em;
+  margin-top: 0;
+  top: 0;
+}
+.dAppNotFound {
+  text-align: center;
+  background: #c2cafc;
+  padding-bottom: 8em;
+  padding-top: 2em;
+  margin-top: 0;
+  top: 0;
+}
+.trophyImage {
+  height: 200px;
+  width: 200px;
+}
+@-webkit-keyframes colorChange {
+  0% {
+    background-color: #c2cafc;
+  }
+  50% {
+    background-color: #ffffff;
+  }
+  100% {
+    background-color: #c2cafc;
+  }
+}
+
+@keyframes colorChange {
+  0% {
+    background-color: #c2cafc;
+  }
+  50% {
+    background-color: #ffffff;
+  }
+  100% {
+    background-color: #c2cafc;
+  }
+}
