@@ -66,6 +66,7 @@ const exampleMobile = require(`./assets/exampleMobile.png`);
 const basicShelf = require(`./assets/basicShelf.png`);
 const basicShelfSmall = require(`./assets/basicShelfSmall.png`);
 const shelfLogo = require(`./assets/shelfLogo.png`);
+const unknownTrophy = require(`./assets/unknownTrophy.png`);
 
 class App extends Component {
   constructor(props) {
@@ -726,7 +727,7 @@ class App extends Component {
     if (nftData.assets) {
       nftData.assets.forEach((trophy, index) => {
         let displayLastSale = [];
-        if (trophy.last_sale) {
+        if (trophy.last_sale && trophy.last_sale.seller) {
           displayLastSale = (
             <Table.Row textAlign="center">
               <Table.Cell>
@@ -738,16 +739,18 @@ class App extends Component {
                   .fromWei(trophy.last_sale.total_price, 'ether')
                   .substring(0, 5)}{' '}
                 {trophy.last_sale.payment_token.symbol} from{' '}
-                <a
-                  href={`https://blockscout.com/eth/mainnet/address/${
-                    trophy.last_sale.seller.address
-                  }`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {trophy.last_sale.seller.address.substring(0, 6)}...
-                  {trophy.last_sale.seller.address.substring(38, 50)}
-                </a>
+                {(
+                  <a
+                    href={`https://blockscout.com/eth/mainnet/address/${
+                      trophy.last_sale.seller.address
+                    }`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {trophy.last_sale.seller.address.substring(0, 6)}...
+                    {trophy.last_sale.seller.address.substring(38, 50)}
+                  </a>
+                ) || 'unknown'}
               </Table.Cell>
             </Table.Row>
           );
@@ -788,9 +791,14 @@ class App extends Component {
             </Table.Row>
           );
         }
+        let trophyImage = unknownTrophy;
+        if (trophy.image_url) {
+          trophyImage = trophy.image_url;
+        }
         displayTrophies.push(
           <Accordion
             as={Grid.Column}
+            verticalAlign="bottom"
             key={index}
             style={{
               textAlign: 'center',
@@ -799,13 +807,34 @@ class App extends Component {
               zIndex: 100 - index
             }}
           >
-            <Image src={trophy.image_url} centered className="trophyImage" />
+            <Modal
+              closeIcon
+              trigger={
+                <Image
+                  src={trophyImage}
+                  centered
+                  className="trophyImage"
+                  as={Card}
+                  link
+                  style={{
+                    background: `#${trophy.background_color}`
+                  }}
+                />
+              }
+              basic
+              size="large"
+            >
+              <Header content={trophy.name || '(unknown)'} />
+              <Modal.Content>
+                <Image src={trophyImage} centered />
+              </Modal.Content>
+            </Modal>
+
             <Card
               link
               raised
               centered
               style={{
-                background: `#${trophy.background_color}`,
                 position: 'absolute',
                 left: '50%',
                 marginLeft: '-140px',
@@ -824,7 +853,7 @@ class App extends Component {
                       textAlign: 'center'
                     }}
                   >
-                    {trophy.name}
+                    {trophy.name || '(unknown)'}
                   </Header>
                 </Accordion.Title>
                 <Accordion.Content
@@ -1461,11 +1490,11 @@ const Heading = ({ mobile, nftData }) => {
               {displayTitle}
               <Container>
                 <TwitterShareButton
-                  title={`Check out my Nifties! niftyshelf.com/${
+                  title={`Check out my cool Nifty trophies! niftyshelf.com/${
                     nftData.userAddress
                   }`}
                   url={`niftyshelf.com/${nftData.userAddress}`}
-                  hashtags={['NFT', 'ERC-721', 'NiftyShelf']}
+                  hashtags={['NFT', 'ERC721', 'NiftyShelf']}
                 >
                   <Button secondary>
                     <Image inline src={twitter} size="mini" /> Make 'em jealous
