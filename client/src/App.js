@@ -67,7 +67,6 @@ const basicShelf = require(`./assets/basicShelf.png`);
 const basicShelfSmall = require(`./assets/basicShelfSmall.png`);
 const shelfLogo = require(`./assets/shelfLogo.png`);
 const unknownTrophy = require(`./assets/unknownTrophy.png`);
-const twitterImage = require(`./assets/socialImage.png`);
 
 class App extends Component {
   constructor(props) {
@@ -691,6 +690,7 @@ class App extends Component {
               zIndex: 100 - index
             }}
           >
+            <Image src={twitterImage} />
             <Modal
               centered={false}
               closeIcon
@@ -951,7 +951,6 @@ class App extends Component {
     }
     return (
       <div className="App">
-        <meta name="twitter:image" content={twitterImage} />
         <div className="content">
           <ResponsiveContainer
             className="ResponsiveContainer"
