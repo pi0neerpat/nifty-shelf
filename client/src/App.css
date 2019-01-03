@@ -114,9 +114,6 @@ body {
   margin-top: 0;
   top: 0;
 }
-.trophyImage {
-  height: 100%;
-}
 @-webkit-keyframes colorChange {
   0% {
     background-color: #c2cafc;

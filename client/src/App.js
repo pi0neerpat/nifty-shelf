@@ -67,6 +67,7 @@ const basicShelf = require(`./assets/basicShelf.png`);
 const basicShelfSmall = require(`./assets/basicShelfSmall.png`);
 const shelfLogo = require(`./assets/shelfLogo.png`);
 const unknownTrophy = require(`./assets/unknownTrophy.png`);
+const twitterImage = require(`./assets/socialImage.png`);
 
 class App extends Component {
   constructor(props) {
@@ -117,16 +118,6 @@ class App extends Component {
       // this.getExistingSubnodes();
     }
   };
-  // componentDidUpdate() {
-  //   if (
-  //     !this.state.userHasBeenLoaded &&
-  //     this.state.account &&
-  //     this.state.displayDappForm
-  //   ) {
-  //     this.getUserSavedContracts();
-  //   }
-  // }
-
   getNFT = () => {
     let userAddress = window.location.pathname.substring(1, 43);
     if (userAddress.length > 1) {
@@ -187,111 +178,6 @@ class App extends Component {
     } else newIndex.push(index);
     this.setState({ activeIndex: newIndex });
   };
-  handleMenuTabChange = (e, { name }) =>
-    this.setState({ activeItem: name, activeIndex: [] });
-  handleChangeABI = (e, { value }) => {
-    this.setState({ abi: '', abiRaw: value, loading: true, errorMessage: '' });
-    const { contractAddress } = this.state;
-    if (value) {
-      // Don't run unless there is some text present
-      // Check for proper formatting and create a new contract instance
-      try {
-        if (value.includes('pragma')) {
-          // Check if it is a smart contract
-          // console.log('input is a smart contract');
-          // // var output = solc.compile(value);
-          // console.log(JSON.stringify(output));
-          // output.contracts['splitter'].interface;
-          this.setState({ solidity: value });
-        } else {
-          // Parse the ABI normally and apply fixes as needed
-          const abiObject = JSON.parse(value);
-          // Name any unnammed outputs (fix for ABI/web3 issue on mainnet)
-          abiObject.forEach((method, i) => {
-            if (method.stateMutability === 'view') {
-              method.outputs.forEach((output, j) => {
-                if (!abiObject[i].outputs[j].name) {
-                  abiObject[i].outputs[j].name = 'unnamed #' + (j + 1);
-                }
-              });
-            }
-            var newMethodData = this.state.methodData;
-            // Check whether the method exists in the arguments list
-            var methodExists = newMethodData[i];
-            // Make a new entry if the method doesn't exist
-            if (!methodExists) {
-              newMethodData.push({
-                name: method.name,
-                inputs: [],
-                outputs: []
-              });
-              this.setState({ methodData: newMethodData });
-            }
-            console.log(newMethodData);
-          });
-          const myContract = new web3.eth.Contract(abiObject, contractAddress);
-          // Save the formatted abi for use in renderInterface()
-          this.setState({
-            abi: JSON.stringify(myContract.options.jsonInterface)
-          });
-        }
-      } catch (err) {
-        this.setState({
-          errorMessage: err.message
-        });
-        return;
-      }
-    }
-    this.setState({ loading: false });
-  };
-  handleMethodDataChange = (e, { methodIndex, value, inputindex, payable }) => {
-    // Takes inputs from the user and stores them to JSON object methodArguments
-    let newMethodData = this.state.methodData;
-    if (inputindex === -1) {
-      newMethodData[methodIndex].value = value;
-    } else {
-      newMethodData[methodIndex].inputs[inputindex] = value;
-    }
-    this.setState({ methodData: newMethodData, errorMessage: false });
-    // console.log(JSON.stringify(this.state.methodData));
-  };
-  handleResultSelect = (e, { result }) => {
-    const name = `${result.title} (clone)`;
-    this.setState({
-      dappName: name,
-      requiredNetwork: 'Mainnet',
-      contractAddress: result.address,
-      abiRaw: JSON.stringify(result.abi),
-      currentDappFormStep: 2
-    });
-  }; // dAppForm search bar
-  handleSearchChange = (e, { value }) => {
-    this.setState({ isLoading: true, dappName: value });
-    setTimeout(() => {
-      if (value.length < 1) return this.resetComponent();
-      const re = new RegExp(_.escapeRegExp(value), 'i');
-      const isMatch = result => re.test(result.title);
-      this.setState({
-        isLoading: false,
-        results: _.filter(this.state.externalContracts, isMatch)
-      });
-    }, 300);
-  }; // dAppForm search bar
-  handleEnsSearchChange = (e, { value }) => {
-    this.setState({ isLoading: true, ensSubnode: value });
-    setTimeout(() => {
-      if (value.length < 1) return this.resetComponent();
-      const isExactMatch = result => {
-        return value === result.title;
-      };
-      this.setState({
-        isLoading: false,
-        results: _.filter(this.state.existingSubnodes, isExactMatch)
-      });
-    }, 300);
-  }; // dAppForm ENS selection
-  resetComponent = () =>
-    this.setState({ isLoading: false, results: [], dappName: '' }); // dAppForm search bar/ENS selection
   handleSubmitSend = (e, { methodIndex }) => {
     const { methodData, abi, contractAddress, account } = this.state;
     // send() methods alter the contract state, and require gas.
@@ -395,7 +281,6 @@ class App extends Component {
         console.log(err);
       });
   };
-
   showErrorMessage = type => {
     let message = <div />;
     if (this.state.errorMessage) {
@@ -491,7 +376,6 @@ class App extends Component {
     }
     this.setState({ displayLoading: loading });
   };
-
   renderDappForm() {
     const { currentDappFormStep } = this.state;
     const errorMessage = this.showErrorMessage();
@@ -808,21 +692,24 @@ class App extends Component {
             }}
           >
             <Modal
+              centered={false}
               closeIcon
+              style={{
+                paddingTop: '3rem'
+              }}
               trigger={
                 <Image
                   src={trophyImage}
                   centered
-                  className="trophyImage"
                   as={Card}
                   link
                   style={{
-                    background: `#${trophy.background_color}`
+                    height: '100%',
+                    background: '#c2cafc'
                   }}
                 />
               }
               basic
-              size="large"
             >
               <Header content={trophy.name || '(unknown)'} />
               <Modal.Content>
@@ -916,229 +803,6 @@ class App extends Component {
       });
     }
     return displayTrophies;
-  }
-  renderNewSendFunctions() {
-    const abiObject = JSON.parse(this.state.abi);
-    let displayFunctions = [];
-    abiObject.forEach((method, index) => {
-      if (method.stateMutability !== 'view' && method.type === 'function')
-        displayFunctions.push(
-          <Accordion
-            as={Card}
-            link
-            raised
-            centered
-            key={index}
-            className="function"
-            // style={{ background: nftData.colorLight }}
-          >
-            <Card.Content textAlign="left">
-              <Accordion.Title
-                active={this.state.activeIndex.includes(index)}
-                index={index}
-                onClick={this.handleToggleAccordian}
-              >
-                <Grid columns="equal" verticalAlign="middle">
-                  <Grid.Column width={3}>
-                    <Icon size="large" circular name="pencil" />
-                  </Grid.Column>
-                  <Grid.Column fluid>
-                    <Header style={{ wordWrap: 'break-word' }}>
-                      {method.name}
-                    </Header>
-                  </Grid.Column>
-                </Grid>
-              </Accordion.Title>
-              <Accordion.Content
-                active={this.state.activeIndex.includes(index)}
-              >
-                {this.renderPremiumFunctions(index)}
-              </Accordion.Content>
-            </Card.Content>
-          </Accordion>
-        );
-    });
-    return displayFunctions;
-  }
-  renderNewCallFunctions() {
-    const abiObject = JSON.parse(this.state.abi);
-    let displayFunctions = [];
-    abiObject.forEach((method, index) => {
-      if (method.stateMutability === 'view')
-        displayFunctions.push(
-          <Accordion
-            as={Card}
-            link
-            raised
-            centered
-            key={index}
-            className="function"
-            // style={{ background: nftData.colorLight }}
-          >
-            <Card.Content textAlign="left">
-              <Accordion.Title
-                active={this.state.activeIndex.includes(index)}
-                index={index}
-                onClick={this.handleToggleAccordian}
-              >
-                <Grid columns="equal" verticalAlign="middle">
-                  <Grid.Column width={3}>
-                    <Icon size="large" circular name="eye" />
-                  </Grid.Column>
-                  <Grid.Column fluid>
-                    <Header style={{ wordWrap: 'break-word' }}>
-                      {method.name}
-                    </Header>
-                  </Grid.Column>
-                </Grid>
-              </Accordion.Title>
-              <Accordion.Content
-                active={this.state.activeIndex.includes(index)}
-              >
-                {this.renderPremiumFunctions(index)}
-              </Accordion.Content>
-            </Card.Content>
-          </Accordion>
-        );
-    });
-    return displayFunctions;
-  }
-  renderPremiumFunctions(methodIndex, premium, helperText, colorDark) {
-    if (this.state.abi) {
-      try {
-        const abiObject = JSON.parse(this.state.abi);
-        const method = abiObject[methodIndex];
-        let onSubmit = this.handleSubmitCall;
-        var inputs = [];
-        var outputs = [];
-        let displayResponse = <div />;
-        let displayMethod = <div />;
-        let displayButton = <div />;
-        let displayHelperText;
-        if (helperText && helperText != '') {
-          displayHelperText = (
-            <Segment style={{ background: colorDark, color: 'white' }}>
-              <i>{helperText}</i>
-            </Segment>
-          );
-        }
-        let displayFooterText = '';
-        if (premium) {
-          displayFooterText = <i>{method.name}</i>;
-        }
-        let buttonStyle = {
-          backgroundColor: '#c2cafc'
-        };
-        if (colorDark) {
-          buttonStyle = {
-            backgroundColor: colorDark,
-            color: 'white'
-          };
-        }
-        if (method.stateMutability !== 'view' && method.type === 'function') {
-          onSubmit = this.handleSubmitSend;
-          method.inputs.forEach((input, j) => {
-            inputs.push(
-              <Form.Input
-                required
-                methodIndex={methodIndex}
-                key={j}
-                inputindex={j}
-                label={input.name}
-                placeholder={input.type}
-                onChange={this.handleMethodDataChange}
-              />
-            );
-          });
-          if (method.payable) {
-            inputs.push(
-              <Form.Input
-                required
-                key={method.name}
-                inputindex={-1}
-                methodIndex={methodIndex}
-                label={`Value to send (ETH)`}
-                placeholder="value"
-                onChange={this.handleMethodDataChange}
-              />
-            );
-          }
-          displayButton = (
-            <Form.Button
-              icon="write"
-              labelPosition="left"
-              content="Sign & Submit"
-              style={buttonStyle}
-            />
-          );
-        } else if (method.stateMutability === 'view') {
-          method.inputs.forEach((input, j) => {
-            inputs.push(
-              <Form.Input
-                required
-                methodIndex={methodIndex}
-                inputindex={j}
-                key={j}
-                inline
-                label={input.name}
-                placeholder={input.type}
-                onChange={this.handleMethodDataChange}
-              />
-            );
-          });
-          displayButton = (
-            <Form.Button
-              icon="refresh"
-              content="Check"
-              labelPosition="left"
-              style={buttonStyle}
-            />
-          );
-        }
-        if (this.state.methodData[methodIndex].outputs.length > 0) {
-          method.outputs.forEach((output, j) => {
-            const outputData = this.state.methodData[methodIndex].outputs[j];
-            outputs.push(
-              <div key={j}>
-                {output.name || '(unnamed)'} <i>{output.type}</i>:
-                <Container style={{ wordWrap: 'break-word' }}>
-                  <b>{outputData || ' '}</b>
-                </Container>
-              </div>
-            );
-          });
-          displayResponse = (
-            <div>
-              <Divider style={{ marginBottom: 0 }} />
-              <Header as="h4" textAlign="center" style={{ marginTop: 2 }}>
-                Response
-              </Header>
-              {outputs}
-            </div>
-          );
-        }
-        displayMethod = (
-          <div>
-            {displayHelperText}
-            <Form
-              onSubmit={onSubmit}
-              methodIndex={methodIndex}
-              key={method.name}
-            >
-              {inputs}
-              <Container textAlign="center">
-                {displayButton}
-                {displayFooterText}
-              </Container>
-            </Form>
-            {displayResponse}
-          </div>
-        );
-        return <div>{displayMethod}</div>;
-      } catch (e) {
-        return <h2>Error generating function from ABI</h2>;
-      }
-    }
   }
   render() {
     let {
@@ -1287,6 +951,7 @@ class App extends Component {
     }
     return (
       <div className="App">
+        <meta name="twitter:image" content={twitterImage} />
         <div className="content">
           <ResponsiveContainer
             className="ResponsiveContainer"
