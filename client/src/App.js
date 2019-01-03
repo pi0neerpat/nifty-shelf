@@ -690,7 +690,6 @@ class App extends Component {
               zIndex: 100 - index
             }}
           >
-            <Image src={twitterImage} />
             <Modal
               centered={false}
               closeIcon
