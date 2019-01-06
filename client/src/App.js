@@ -162,6 +162,13 @@ class App extends Component {
   handleChange = (e, { name, value }) => {
     this.setState({ [name]: value });
   };
+  handleAddressChange = (e, { name, value }) => {
+    this.setState({ [name]: value });
+    setTimeout(() => {
+      //maybe they just scanned an address?
+      window.location = '/' + value;
+    }, 100);
+  };
   handleInput(e) {
     let update = {};
     update[e.target.name] = e.target.value;
@@ -407,60 +414,63 @@ class App extends Component {
               </Grid>
               <Container>
                 <p style={{ textAlign: 'left', fontSize: '2em' }}>
-                  Enter your ETH address:
+                  Enter an ETH address:
                 </p>
-                <Form
-                  error={!!this.state.errorMessage}
-                  onSubmit={() =>
-                    window.location.replace(`/${this.state.userAddress}`)
-                  }
-                >
-                  <Form.Group>
-                    <Form.Input
-                      size="huge"
-                      placeholder="0xabc..."
-                      required
-                      width={11}
-                      name="userAddress"
-                      onChange={this.handleChange}
-                      value={this.state.userAddress}
-                    />
-                    <Form.Button
-                      icon="wizard"
-                      width={5}
-                      color="green"
-                      size="huge"
-                      content="Create your Nifty Shelf"
-                    />
-                  </Form.Group>
-                </Form>
-                <Divider horizontal hidden />
-                <Modal
-                  centered={false}
-                  closeIcon
-                  style={{
-                    paddingTop: '3rem'
-                  }}
-                  trigger={
-                    <Button
-                      size="huge"
-                      icon="camera"
-                      content="QR Scan"
-                      onClick={null}
-                    />
-                  }
-                  basic
-                >
-                  <Header Scan your address />
-                  <Modal.Content>
-                    <Scanner
-                      changeView={this.changeView}
-                      onError={error => {
-                        this.changeAlert('danger', error);
+                <Grid columns={2} textAlign="left">
+                  <Grid.Column width={8}>
+                    <Form
+                      error={!!this.state.errorMessage}
+                      onSubmit={() =>
+                        window.location.replace(`/${this.state.userAddress}`)
+                      }
+                    >
+                      <Form.Input
+                        size="huge"
+                        placeholder="0xabc..."
+                        name="userAddress"
+                        onChange={this.handleAddressChange}
+                        value={this.state.userAddress}
+                      />
+                    </Form>
+                  </Grid.Column>
+                  <Grid.Column>
+                    <Modal
+                      centered={false}
+                      closeIcon
+                      style={{
+                        textAlign: 'left',
+                        paddingTop: '3rem'
                       }}
-                    />
-                  </Modal.Content>
-                </Modal>
+                      trigger={
+                        <Button
+                          style={{ textAlign: 'left' }}
+                          size="huge"
+                          icon="camera"
+                          content="QR Scan"
+                          onClick={null}
+                        />
+                      }
+                      basic
+                    >
+                      <Header Scan your address />
+                      <Modal.Content>
+                        <Scanner
+                          changeView={this.changeView}
+                          onError={error => {
+                            this.changeAlert('danger', error);
+                          }}
+                        />
+                      </Modal.Content>
+                    </Modal>
+                  </Grid.Column>
+                </Grid>
+                <Divider hidden />
+                <h4 style={{ textAlign: 'left' }}>
+                  No nifties?{' '}
+                  <a href="https://niftyshelf.com/0x0f48669b1681d41357eac232f516b77d0c10f0f1/">
+                    See an example.
+                  </a>
+                </h4>
               </Container>
             </div>
           </Responsive>
@@ -602,7 +612,7 @@ class App extends Component {
             </List>
           </Grid.Column>
           <Grid.Column width={10}>
-            <Grid columns={2}>
+            <Grid stackable columns={2}>
               <Grid.Column textAlign="left">
                 <h4>Feedback</h4>
                 What does this app need? What is broken?
@@ -734,7 +744,7 @@ class App extends Component {
         }
         let trophyName =
           trophy.name ||
-          trophy.asset_contract.name + '#' + trophy.token_id ||
+          trophy.asset_contract.name + ' #' + trophy.token_id ||
           'unknown';
         if (trophy.asset_contract.name === '' && trophy.name === null) {
           trophyName = 'unknown #' + trophy.token_id;

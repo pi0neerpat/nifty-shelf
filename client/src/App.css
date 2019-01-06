@@ -44,8 +44,8 @@ body {
 .homePageHeader {
   background: #c2cafc;
   padding-top: 5rem;
-  padding-bottom: 10rem;
-  margin-bottom: 3rem;
+  padding-bottom: 7rem;
+  text-align: center;
 }
 .homePageHeaderMobile {
   text-align: center;
