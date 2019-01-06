@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import QrReader from 'react-qr-reader';
 import ReactLoading from 'react-loading';
-// import FileReaderInput from 'react-file-reader-input';
-// import QrCode from 'qrcode-reader';
-// import qrimage from '../qrcode.png';
-// var Jimp = require("jimp");
+import FileReaderInput from 'react-file-reader-input';
+import QrCode from 'qrcode-reader';
+import qrimage from '../assets/qrcode.png';
+var Jimp = require('jimp');
 
 class Scanner extends Component {
   constructor(props) {
@@ -52,58 +52,58 @@ class Scanner extends Component {
   componentWillUnmount() {
     this.stopRecording();
   }
-  // legacyHandleChange(e, results) {
-  //   //this.props.changeView('reader')
-  //   results.forEach(result => {
-  //     const [e, file] = result;
-  //     let reader = new FileReader();
-  //     reader.onload = e => {
-  //       //  this.props.changeView('send_by_scan',()=>{
-  //       console.log('');
-  //       this.setState({ imageData: e.target.result });
-  //       Jimp.read(
-  //         Buffer.from(
-  //           e.target.result
-  //             .replace(/^data:image\/png;base64,/, '')
-  //             .replace(/^data:image\/jpeg;base64,/, ''),
-  //           'base64'
-  //         ),
-  //         (err, image) => {
-  //           if (err) {
-  //             alert('ERR1');
-  //             console.error('ERR1', err);
-  //             this.setState({ scanFail: err.toString() });
-  //           }
-  //           var qr = new QrCode();
-  //           qr.callback = (err, value) => {
-  //             this.setState({ isLoading: false });
-  //             if (err) {
-  //               setTimeout(() => {
-  //                 console.log('FAILED TO SCAN!!!');
-  //                 this.setState({ scanFail: err.toString() });
-  //                 setTimeout(() => {
-  //                   this.setState({ imageData: false });
-  //                 }, 1500);
-  //                 setTimeout(() => {
-  //                   this.setState({ scanFail: false });
-  //                 }, 3500);
-  //               }, 1500);
-  //             } else if (value && value.result) {
-  //               this.handleScan(value.result);
-  //             }
-  //           };
-  //           if (!image || !image.bitmap) {
-  //             //this.setState({extraFail:JSON.stringify(e.target.result)})
-  //           } else {
-  //             qr.decode(image.bitmap);
-  //           }
-  //         }
-  //       );
-  //       //  })
-  //     };
-  //     reader.readAsDataURL(file);
-  //   });
-  // }
+  legacyHandleChange(e, results) {
+    //this.props.changeView('reader')
+    results.forEach(result => {
+      const [e, file] = result;
+      let reader = new FileReader();
+      reader.onload = e => {
+        //  this.props.changeView('send_by_scan',()=>{
+        console.log('');
+        this.setState({ imageData: e.target.result });
+        Jimp.read(
+          Buffer.from(
+            e.target.result
+              .replace(/^data:image\/png;base64,/, '')
+              .replace(/^data:image\/jpeg;base64,/, ''),
+            'base64'
+          ),
+          (err, image) => {
+            if (err) {
+              alert('ERR1');
+              console.error('ERR1', err);
+              this.setState({ scanFail: err.toString() });
+            }
+            var qr = new QrCode();
+            qr.callback = (err, value) => {
+              this.setState({ isLoading: false });
+              if (err) {
+                setTimeout(() => {
+                  console.log('FAILED TO SCAN!!!');
+                  this.setState({ scanFail: err.toString() });
+                  setTimeout(() => {
+                    this.setState({ imageData: false });
+                  }, 1500);
+                  setTimeout(() => {
+                    this.setState({ scanFail: false });
+                  }, 3500);
+                }, 1500);
+              } else if (value && value.result) {
+                this.handleScan(value.result);
+              }
+            };
+            if (!image || !image.bitmap) {
+              //this.setState({extraFail:JSON.stringify(e.target.result)})
+            } else {
+              qr.decode(image.bitmap);
+            }
+          }
+        );
+        //  })
+      };
+      reader.readAsDataURL(file);
+    });
+  }
   render() {
     let displayedImage = '';
     if (this.state.imageData) {
@@ -193,67 +193,67 @@ class Scanner extends Component {
         style={{ width: '100%' }}
       />
     );
-    // if (this.state.legacyMode) {
-    //   displayedReader = (
-    //     <div
-    //       onClick={() => {
-    //         console.log('LOADING...');
-    //         this.setState({ isLoading: true });
-    //       }}
-    //     >
-    //       <FileReaderInput
-    //         as="binary"
-    //         id="my-file-input"
-    //         onChange={this.legacyHandleChange.bind(this)}
-    //       >
-    //         <div
-    //           style={{
-    //             position: 'absolute',
-    //             zIndex: 11,
-    //             top: 0,
-    //             left: 0,
-    //             width: '100%',
-    //             height: '100%',
-    //             color: '#FFFFFF',
-    //             cursor: 'pointer'
-    //           }}
-    //         >
-    //           <div style={{ textAlign: 'center', paddingTop: '15%' }}>
-    //             <div style={{ marginBottom: 20 }}>
-    //               <i className="fas fa-camera" />
-    //             </div>
-    //             <img
-    //               src={qrimage}
-    //               style={{
-    //                 position: 'absolute',
-    //                 left: '36%',
-    //                 top: '25%',
-    //                 padding: 4,
-    //                 border: '1px solid #888888',
-    //                 opacity: 0.25,
-    //                 maxWidth: '30%',
-    //                 maxHight: '30%'
-    //               }}
-    //             />
-    //           </div>
-    //           <div style={{ textAlign: 'center', paddingTop: '45%' }}>
-    //             <div>Capture QR Code:</div>
-    //             <div
-    //               className="main-card card w-100"
-    //               style={{ backgroundColor: '#000000' }}
-    //             >
-    //               <div className="content ops row">
-    //                 <button className="btn btn-large w-100">
-    //                   <i className="fas fa-camera" /> Take Picture
-    //                 </button>
-    //               </div>
-    //             </div>
-    //           </div>
-    //         </div>
-    //       </FileReaderInput>
-    //     </div>
-    //   );
-    // }
+    if (this.state.legacyMode) {
+      displayedReader = (
+        <div
+          onClick={() => {
+            console.log('LOADING...');
+            this.setState({ isLoading: true });
+          }}
+        >
+          <FileReaderInput
+            as="binary"
+            id="my-file-input"
+            onChange={this.legacyHandleChange.bind(this)}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                zIndex: 11,
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                color: '#FFFFFF',
+                cursor: 'pointer'
+              }}
+            >
+              <div style={{ textAlign: 'center', paddingTop: '15%' }}>
+                <div style={{ marginBottom: 20 }}>
+                  <i className="fas fa-camera" />
+                </div>
+                <img
+                  src={qrimage}
+                  style={{
+                    position: 'absolute',
+                    left: '36%',
+                    top: '25%',
+                    padding: 4,
+                    border: '1px solid #888888',
+                    opacity: 0.25,
+                    maxWidth: '30%',
+                    maxHight: '30%'
+                  }}
+                />
+              </div>
+              <div style={{ textAlign: 'center', paddingTop: '45%' }}>
+                <div>Capture QR Code:</div>
+                <div
+                  className="main-card card w-100"
+                  style={{ backgroundColor: '#000000' }}
+                >
+                  <div className="content ops row">
+                    <button className="btn btn-large w-100">
+                      <i className="fas fa-camera" /> Take Picture
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </FileReaderInput>
+        </div>
+      );
+    }
 
     return (
       <div

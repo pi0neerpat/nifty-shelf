@@ -446,7 +446,7 @@ class App extends Component {
                           style={{ textAlign: 'left' }}
                           size="huge"
                           icon="camera"
-                          content="QR Scan"
+                          content="Scan QR"
                           onClick={null}
                         />
                       }
@@ -498,20 +498,14 @@ class App extends Component {
                   <Form.Input
                     size="huge"
                     placeholder="0xabc..."
-                    label="Enter your ETH address"
+                    label="Enter an ETH address"
                     fluid
                     name="userAddress"
-                    onChange={this.handleChange}
+                    onChange={this.handleAddressChange}
                     value={this.state.userAddress}
                   />
-                  <Form.Button
-                    icon="wizard"
-                    color="green"
-                    size="huge"
-                    content="Create your Nifty Shelf"
-                  />
                 </Form>
-                <Divider horizontal hidden />
+                <Divider hidden horizontal />
                 <Modal
                   centered={false}
                   closeIcon
@@ -519,12 +513,7 @@ class App extends Component {
                     paddingTop: '3rem'
                   }}
                   trigger={
-                    <Button
-                      size="huge"
-                      icon="camera"
-                      content="QR Scan"
-                      onClick={null}
-                    />
+                    <Button fluid size="huge" icon="camera" content="Scan QR" />
                   }
                   basic
                 >
@@ -538,6 +527,12 @@ class App extends Component {
                     />
                   </Modal.Content>
                 </Modal>
+                <h4 style={{ textAlign: 'left' }}>
+                  No nifties?{' '}
+                  <a href="https://niftyshelf.com/0x0f48669b1681d41357eac232f516b77d0c10f0f1/">
+                    See an example.
+                  </a>
+                </h4>
               </Container>
             </div>
           </Responsive>
