@@ -39,15 +39,14 @@ import {
 // import { DapparatusCustom } from './components/DapparatusCustom';
 // import ContractLoaderCustom from './components/ContractLoaderCustom';
 import TransactionsCustom from './components/transactionsCustom';
+import Scanner from './components/scanner';
 import Web3 from 'web3';
 import web3 from './ethereum/web3';
 import moment from 'moment';
 import _ from 'lodash';
-// import sampleABI from './ethereum/sampleABI1'; // ABI for test purposes
 import PropTypes from 'prop-types';
 import { TwitterShareButton } from 'react-share';
-const axios = require('axios');
-// Dapparatus
+
 const METATX = {
   endpoint: 'http://0.0.0.0:1001/',
   contract: '0xf5bf6541843D2ba2865e9aeC153F28aaD96F6fbc'
@@ -57,6 +56,7 @@ const WEB3_PROVIDER = 'https://ropsten.infura.io/UkZfSHYlZUsRnBPYPjTO';
 // image assets
 // const chelseaHello = require('./assets/chelsea-hello.png');
 
+const axios = require('axios');
 const twitter = require('./assets/twitter.png');
 const user = require('./assets/user.png');
 const ethereum = require('./assets/ethereum.png');
@@ -434,6 +434,33 @@ class App extends Component {
                     />
                   </Form.Group>
                 </Form>
+                <Divider horizontal hidden />
+                <Modal
+                  centered={false}
+                  closeIcon
+                  style={{
+                    paddingTop: '3rem'
+                  }}
+                  trigger={
+                    <Button
+                      size="huge"
+                      icon="camera"
+                      content="QR Scan"
+                      onClick={null}
+                    />
+                  }
+                  basic
+                >
+                  <Header Scan your address />
+                  <Modal.Content>
+                    <Scanner
+                      changeView={this.changeView}
+                      onError={error => {
+                        this.changeAlert('danger', error);
+                      }}
+                    />
+                  </Modal.Content>
+                </Modal>
               </Container>
             </div>
           </Responsive>
@@ -474,6 +501,33 @@ class App extends Component {
                     content="Create your Nifty Shelf"
                   />
                 </Form>
+                <Divider horizontal hidden />
+                <Modal
+                  centered={false}
+                  closeIcon
+                  style={{
+                    paddingTop: '3rem'
+                  }}
+                  trigger={
+                    <Button
+                      size="huge"
+                      icon="camera"
+                      content="QR Scan"
+                      onClick={null}
+                    />
+                  }
+                  basic
+                >
+                  <Header Scan your address />
+                  <Modal.Content>
+                    <Scanner
+                      changeView={this.changeView}
+                      onError={error => {
+                        this.changeAlert('danger', error);
+                      }}
+                    />
+                  </Modal.Content>
+                </Modal>
               </Container>
             </div>
           </Responsive>
@@ -481,10 +535,10 @@ class App extends Component {
             <Grid container stackable columns={2}>
               <Grid.Row textAlign="left" verticalAlign="middle">
                 <Grid.Column>
-                  <h1>Interested in dApps?</h1>
+                  <h1>Do you build dApps?</h1>
                   <h3>
-                    Make your own in seconds. No coding required, free and
-                    open-source. Check it out at{' '}
+                    Check out our other free tool. Make a dApp in seconds,
+                    without writing any code{' '}
                     <a href="https://OneClickdApp.com" target="blank">
                       OneClickdApp.com
                     </a>
@@ -492,41 +546,6 @@ class App extends Component {
                 </Grid.Column>
                 <Grid.Column>
                   <Image src={exampleMobile} size="large" />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
-          </div>
-          <div className="homePageContent">
-            <Grid container stackable columns={2}>
-              <Grid.Row verticalAlign="middle">
-                <Grid.Column textAlign="left">
-                  <h1>Suggestions?</h1>
-                  <h3>
-                    Let us know if something is broken, share what you think we
-                    should build next, or just say hello!
-                  </h3>
-                </Grid.Column>
-                <Grid.Column textAlign="left">
-                  <Form
-                    error={!!this.state.errorMessage}
-                    onSubmit={this.handleSubmitSuggestion}
-                    success={this.state.suggestionSubmitted}
-                  >
-                    <Form.TextArea
-                      placeholder="You guys rock!"
-                      required
-                      name="suggestion"
-                      onChange={this.handleChange}
-                      value={this.state.suggestion}
-                    />
-                    <Form.Button
-                      icon="share"
-                      primary
-                      size="huge"
-                      content="Send"
-                    />
-                    <Message success header="Thank you!" />
-                  </Form>
                 </Grid.Column>
               </Grid.Row>
             </Grid>
@@ -540,46 +559,74 @@ class App extends Component {
     return (
       <div className="footer">
         <Grid divided stackable textAlign="left">
-          <Grid.Row>
-            <Grid.Column width={3}>
-              <h4>Nifty Shelf</h4>
-              <List link>
-                <List.Item
-                  style={{ color: 'white' }}
-                  as="a"
-                  href="https://opensea.io"
-                  target="blank"
+          <Grid.Column width={3}>
+            <h4>Nifty Shelf</h4>
+            <List link>
+              <List.Item
+                style={{ color: 'white' }}
+                as="a"
+                href="https://opensea.io"
+                target="blank"
+              >
+                Data by OpenSea.io
+              </List.Item>
+              <List.Item
+                style={{ color: 'white' }}
+                as="a"
+                href="mailto:blockchainbuddha@gmail.com?subject=Question%20about%20NiftyShelf.com"
+                target="_self"
+              >
+                Contact Us
+              </List.Item>
+            </List>
+          </Grid.Column>
+          <Grid.Column width={3}>
+            <h4>Other cool stuff</h4>
+            <List link>
+              <List.Item
+                style={{ color: 'white' }}
+                as="a"
+                href="https://oneclickdapp.com"
+                target="blank"
+              >
+                One Click dApp
+              </List.Item>
+              <List.Item
+                style={{ color: 'white' }}
+                as="a"
+                href="https://xdai.io"
+                target="blank"
+              >
+                Burner Wallet
+              </List.Item>
+            </List>
+          </Grid.Column>
+          <Grid.Column width={10}>
+            <Grid columns={2}>
+              <Grid.Column textAlign="left">
+                <h4>Feedback</h4>
+                What does this app need? What is broken?
+              </Grid.Column>
+              <Grid.Column textAlign="left">
+                <Form
+                  error={!!this.state.errorMessage}
+                  onSubmit={this.handleSubmitSuggestion}
+                  success={this.state.suggestionSubmitted}
                 >
-                  Data by OpenSea.io
-                </List.Item>
-                <List.Item
-                  style={{ color: 'white' }}
-                  as="a"
-                  href="mailto:blockchainbuddha@gmail.com?subject=Question%20about%20NiftyShelf.com"
-                  target="_self"
-                >
-                  Contact Us
-                </List.Item>
-              </List>
-            </Grid.Column>
-            <Grid.Column width={3}>
-              <h4>Other cool stuff</h4>
-              <List link>
-                <List.Item
-                  style={{ color: 'white' }}
-                  as="a"
-                  href="https://oneclickdapp.com"
-                  target="blank"
-                >
-                  One Click dApp
-                </List.Item>
-              </List>
-            </Grid.Column>
-            <Grid.Column width={7}>
-              <p>Your ERC-721 tokens... on a shelf.</p>
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>Copyright 2019 NiftyShelf.com</Grid.Row>
+                  <Form.TextArea
+                    placeholder="You guys rock!"
+                    required
+                    name="suggestion"
+                    onChange={this.handleChange}
+                    value={this.state.suggestion}
+                  />
+                  <Form.Button icon="share" content="Send" />
+                  <Message success header="Thank you!" />
+                </Form>
+              </Grid.Column>
+            </Grid>
+          </Grid.Column>
+          Your ERC-721 tokens on a shelf. Copyright 2019 NiftyShelf.com
         </Grid>
       </div>
     );
@@ -654,12 +701,16 @@ class App extends Component {
               <Icon name="linkify" />
             </Table.Cell>
             <Table.Cell>
-              {trophy.asset_contract.name}#{trophy.token_id}
+              {trophy.asset_contract.name} #{trophy.token_id}
               <br />
               (No link provided)
             </Table.Cell>
           </Table.Row>
         );
+        let tokenID = trophy.token_id;
+        if (tokenID.length > 5) {
+          tokenID = `${tokenID.substring(0, 5)}...`;
+        }
         if (trophy.external_link) {
           displayExternalLink = (
             <Table.Row>
@@ -668,15 +719,25 @@ class App extends Component {
               </Table.Cell>
               <Table.Cell>
                 <a href={trophy.external_link} target="_blank" rel="noopener">
-                  {trophy.asset_contract.name} #{trophy.token_id}
+                  {trophy.asset_contract.name} #{tokenID}
                 </a>
               </Table.Cell>
             </Table.Row>
           );
         }
         let trophyImage = unknownTrophy;
+        if (trophy.asset_contract.image_url) {
+          trophyImage = trophy.asset_contract.image_url;
+        }
         if (trophy.image_url) {
           trophyImage = trophy.image_url;
+        }
+        let trophyName =
+          trophy.name ||
+          trophy.asset_contract.name + '#' + trophy.token_id ||
+          'unknown';
+        if (trophy.asset_contract.name === '' && trophy.name === null) {
+          trophyName = 'unknown #' + trophy.token_id;
         }
         displayTrophies.push(
           <Accordion
@@ -710,7 +771,11 @@ class App extends Component {
               }
               basic
             >
-              <Header content={trophy.name || '(unknown)'} />
+              <Header
+                content={
+                  trophy.name || 'unknown ' + trophy.token_id || '(unknown)'
+                }
+              />
               <Modal.Content>
                 <Image src={trophyImage} centered />
               </Modal.Content>
@@ -739,41 +804,44 @@ class App extends Component {
                       textAlign: 'center'
                     }}
                   >
-                    {trophy.name || '(unknown)'}
+                    {trophyName}
                   </Header>
                 </Accordion.Title>
                 <Accordion.Content
                   active={this.state.activeIndex.includes(index)}
                 >
-                  <Table basic unstackable definition>
-                    <Table.Body>
-                      <Table.Row>
-                        <Table.Cell textAlign="center">
-                          <Icon name="comment" size="large" />
-                        </Table.Cell>
-                        <Table.Cell>{trophy.description}</Table.Cell>
-                      </Table.Row>
-                      {displayExternalLink}
-                      <Table.Row>
-                        <Table.Cell textAlign="center">
-                          <Icon name="at" size="large" />
-                        </Table.Cell>
-                        <Table.Cell>
-                          <a
-                            href={`https://blockscout.com/eth/mainnet/address/${
-                              trophy.asset_contract.address
-                            }`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {trophy.asset_contract.address.substring(0, 6)}...
-                            {trophy.asset_contract.address.substring(38, 50)}
-                          </a>
-                        </Table.Cell>
-                      </Table.Row>
-                      {displayLastSale}
-                    </Table.Body>
-                  </Table>
+                  <Container>
+                    <Table basic unstackable definition>
+                      <Table.Body>
+                        <Table.Row>
+                          <Table.Cell textAlign="center">
+                            <Icon name="comment" size="large" />
+                          </Table.Cell>
+                          <Table.Cell>{trophy.description}</Table.Cell>
+                        </Table.Row>
+                        {displayExternalLink}
+                        <Table.Row>
+                          <Table.Cell textAlign="center">
+                            <Icon name="at" size="large" />
+                          </Table.Cell>
+                          <Table.Cell>
+                            <a
+                              href={`https://blockscout.com/eth/mainnet/address/${
+                                trophy.asset_contract.address
+                              }`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {trophy.asset_contract.address.substring(0, 6)}
+                              ...
+                              {trophy.asset_contract.address.substring(38, 50)}
+                            </a>
+                          </Table.Cell>
+                        </Table.Row>
+                        {displayLastSale}
+                      </Table.Body>
+                    </Table>
+                  </Container>
                 </Accordion.Content>
               </Card.Content>
             </Card>
