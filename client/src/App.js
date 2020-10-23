@@ -27,36 +27,15 @@ import {
   Sidebar,
   Dropdown,
 } from "semantic-ui-react";
-import {
-  Dapparatus,
-  Gas,
-  // ContractLoader,
-  // Transactions,
-  // Events,
-  // Scaler,
-  Blockie,
-} from "dapparatus";
-// import { DapparatusCustom } from './components/DapparatusCustom';
-// import ContractLoaderCustom from './components/ContractLoaderCustom';
-import TransactionsCustom from "./components/transactionsCustom";
+
 import Scanner from "./components/scanner";
-import Web3 from "web3";
-import web3 from "./ethereum/web3";
 import moment from "moment";
 import _ from "lodash";
 import PropTypes from "prop-types";
 import { TwitterShareButton } from "react-share";
 
-const METATX = {
-  endpoint: "http://0.0.0.0:1001/",
-  contract: "0xf5bf6541843D2ba2865e9aeC153F28aaD96F6fbc",
-  // accountGenerator: '//account.metatx.io'
-};
-const WEB3_PROVIDER = "https://ropsten.infura.io/UkZfSHYlZUsRnBPYPjTO";
-// image assets
-// const chelseaHello = require('./assets/chelsea-hello.png');
-
 const axios = require("axios");
+
 const twitter = require("./assets/twitter.png");
 const user = require("./assets/user.png");
 const ethereum = require("./assets/ethereum.png");
@@ -184,88 +163,7 @@ class App extends Component {
     } else newIndex.push(index);
     this.setState({ activeIndex: newIndex });
   };
-  handleSubmitSend = (e, { methodIndex }) => {
-    const { methodData, abi, contractAddress, account } = this.state;
-    // send() methods alter the contract state, and require gas.
-    console.log("Performing function #" + methodIndex + " 'send()'...");
-    this.setState({ errorMessage: "" });
-    let newMethodData = methodData;
-    const method = methodData[methodIndex];
-    if (!method) {
-      this.setState({ errorMessage: "You must enter some values" });
-    } else {
-      console.log("method submitted" + JSON.stringify(method));
-      // Generate the contract object
-      // TODO instead use the contract instance created during submitDapp()
-      try {
-        const myContract = new web3.eth.Contract(
-          JSON.parse(abi),
-          contractAddress
-        );
-        myContract.methods[method.name](...method.inputs)
-          .send({
-            from: account,
-            value: web3.utils.toWei(method.value || "0", "ether"),
-          })
-          .then((response) => {
-            // console.log('pass bool check' + typeof response);
-            if (typeof response === "boolean") {
-              newMethodData[methodIndex].outputs[0] = response.toString();
-            } else if (typeof response === "object") {
-              Object.entries(response).forEach(([key, value]) => {
-                newMethodData[methodIndex].outputs[key] = value.toString();
-              });
-            } else newMethodData[methodIndex].outputs[0] = response;
-            this.setState({ methodData: newMethodData });
-          })
-          .catch((err) => {
-            this.setState({ errorMessage: err.message });
-          });
-      } catch (err) {
-        this.setState({ errorMessage: err.message });
-      }
-    }
-  };
-  handleSubmitCall = (e, { methodIndex }) => {
-    // call() methods do not alter the contract state. No gas needed.
-    const { abi, contractAddress, methodData } = this.state;
-    console.log("Performing function #" + methodIndex + " 'call()'...");
-    let newMethodData = methodData;
-    this.setState({ errorMessage: "" });
-    // note: only gets first method. There could be more with identical name
-    // TODO fix this ^
-    const method = methodData[methodIndex];
-    console.log("method submitted" + JSON.stringify(method));
-    let inputs = method.inputs || []; // return an empty array if no inputs exist
-    // Generate the contract object
-    // TODO instead use the contract instance created during submitDapp()
-    try {
-      const myContract = new web3.eth.Contract(
-        JSON.parse(abi),
-        contractAddress
-      );
-      // using "..." to destructure inputs[]
-      myContract.methods[method.name](...inputs)
-        .call({
-          from: this.state.account,
-        })
-        .then((response) => {
-          if (typeof response === "boolean") {
-            newMethodData[methodIndex].outputs[0] = response.toString();
-          } else if (typeof response === "object") {
-            Object.entries(response).forEach(([key, value]) => {
-              newMethodData[methodIndex].outputs[key] = value.toString();
-            });
-          } else newMethodData[methodIndex].outputs[0] = response;
-          this.setState({ methodData: newMethodData });
-        })
-        .catch((err) => {
-          this.setState({ errorMessage: err.message });
-        });
-    } catch (err) {
-      this.setState({ errorMessage: err.message });
-    }
-  };
+
   handleCreateNewDapp = () => {
     this.setState({
       currentDappFormStep: 1,
@@ -667,11 +565,7 @@ class App extends Component {
                 <Icon name="legal" size="large" />
               </Table.Cell>
               <Table.Cell textAlign="left">
-                Bought for{" "}
-                {web3.utils
-                  .fromWei(trophy.last_sale.total_price, "ether")
-                  .substring(0, 5)}{" "}
-                {trophy.last_sale.payment_token.symbol} from{" "}
+                Bought for {trophy.last_sale.payment_token.symbol} from{" "}
                 {(
                   <a
                     href={`https://blockscout.com/eth/mainnet/address/${trophy.last_sale.seller.address}`}
@@ -883,130 +777,6 @@ class App extends Component {
       enableDapparatus,
     } = this.state;
     let connectedDisplay = [];
-    if (web3 && !displayDappForm) {
-      connectedDisplay.push(
-        <Gas
-          key="Gas"
-          onUpdate={(state) => {
-            console.log("Gas price update:", state);
-            this.setState(state, () => {
-              console.log("GWEI set:", this.state.gwei);
-            });
-          }}
-        />
-      );
-      // connectedDisplay.push(
-      //   <ContractLoaderCustom
-      //     key="Contract Loader Custom"
-      //     config={{ hide: false }}
-      //     web3={this.state.web3}
-      //     onReady={contracts => {
-      //       console.log('contracts loaded', contracts);
-      //       this.setState({ contracts: contracts });
-      //     }}
-      //     address={contractAddress}
-      //     abi={this.state.abiRaw}
-      //     contractName={getnftData}
-      //   />
-      // );
-
-      // connectedDisplay.push(
-      //   <ContractLoader
-      //     key="ContractLoader"
-      //     config={{ DEBUG: true }}
-      //     web3={web3}
-      //     require={path => {
-      //       return require(`${__dirname}/${path}`);
-      //     }}
-      //     onReady={(contracts, customLoader) => {
-      //       console.log('contracts loaded', contracts);
-      //       this.setState(
-      //         {
-      //           customLoader: customLoader,
-      //           contracts: contracts
-      //         },
-      //         async () => {
-      //           console.log('Contracts Are Ready:', this.state.contracts);
-      //         }
-      //       );
-      //     }}
-      //   />
-      // );
-
-      // if (contracts) {
-      //   connectedDisplay.push(
-      //     <Events
-      //       key="Events"
-      //       config={{ hide: false, debug: true }}
-      //       contract={contracts.splitter}
-      //       eventName={'Create'}
-      //       block={block}
-      //       id={'_id'}
-      //       filter={{ _owner: account }}
-      //       onUpdate={(eventData, allEvents) => {
-      //         console.log('EVENT DATA:', eventData);
-      //         this.setState({ events: allEvents });
-      //       }}
-      //     />
-      //   );
-      // }
-      connectedDisplay.push(
-        // Simple UI tweak for TransactionsCustom
-        <Responsive
-          key="Transactions"
-          minWidth={Responsive.onlyTablet.minWidth}
-        >
-          <TransactionsCustom
-            config={{ DEBUG: false }}
-            account={account}
-            gwei={gwei}
-            web3={web3}
-            block={block}
-            avgBlockTime={avgBlockTime}
-            etherscan={etherscan}
-            onReady={(state) => {
-              console.log("Transactions component is ready:", state);
-              this.setState(state);
-            }}
-            onReceipt={(transaction, receipt) => {
-              console.log("Transaction Receipt", transaction, receipt);
-            }}
-          />
-        </Responsive>
-      );
-    }
-    let dapparatus;
-    if (enableDapparatus) {
-      dapparatus = (
-        <Dapparatus
-          config={{
-            DEBUG: false,
-            requiredNetwork: this.state.requiredNetwork,
-            hide: displayDappForm,
-            textStyle: {
-              color: "#000000",
-            },
-            warningStyle: {
-              fontSize: 20,
-              color: "#d31717",
-            },
-            blockieStyle: {
-              size: 5,
-              top: 0,
-            },
-          }}
-          metatx={METATX}
-          fallbackWeb3Provider={new Web3.providers.HttpProvider(WEB3_PROVIDER)}
-          onUpdate={(state) => {
-            console.log("dapparatus state update:", state);
-            if (state.web3Provider) {
-              state.web3 = new Web3(state.web3Provider);
-              this.setState(state);
-            }
-          }}
-        />
-      );
-    }
     let mainDisplay = [];
     if (displayLoading) {
       mainDisplay = displayLoading;
@@ -1020,7 +790,6 @@ class App extends Component {
         <div className="content">
           <ResponsiveContainer
             className="ResponsiveContainer"
-            dapparatus={dapparatus}
             nftData={this.state.nftData}
           >
             {mainDisplay}
@@ -1036,16 +805,13 @@ class App extends Component {
 export default App;
 
 // Mobile Responsive components
-const ResponsiveContainer = ({ children, dapparatus, nftData }) => (
+const ResponsiveContainer = ({ children, nftData }) => (
   <div>
-    <DesktopContainer dapparatus={dapparatus} nftData={nftData}>
-      {children}
-    </DesktopContainer>
-    <MobileContainer dapparatus={dapparatus} nftData={nftData}>
-      {children}
-    </MobileContainer>
+    <DesktopContainer nftData={nftData}>{children}</DesktopContainer>
+    <MobileContainer nftData={nftData}>{children}</MobileContainer>
   </div>
 );
+
 class DesktopContainer extends Component {
   state = {};
 
@@ -1053,7 +819,7 @@ class DesktopContainer extends Component {
   showFixedMenu = () => this.setState({ fixed: true });
 
   render() {
-    const { children, dapparatus, nftData } = this.props;
+    const { children, nftData } = this.props;
     let backgroundColor = null;
     if (nftData.premium) {
       backgroundColor = nftData.colorLight;
@@ -1093,7 +859,6 @@ class DesktopContainer extends Component {
                 </Dropdown>
               </Menu.Item>
             </Menu.Menu>
-            <div className="dapparatus">{dapparatus}</div>
           </Menu>
           <Heading nftData={nftData} />
         </Visibility>
@@ -1102,6 +867,7 @@ class DesktopContainer extends Component {
     );
   }
 }
+
 class MobileContainer extends Component {
   state = {};
 
@@ -1115,7 +881,7 @@ class MobileContainer extends Component {
     this.setState({ sidebarOpened: !this.state.sidebarOpened });
 
   render() {
-    const { children, dapparatus, nftData } = this.props;
+    const { children, nftData } = this.props;
     const { sidebarOpened } = this.state;
     let backgroundColor = null;
     if (nftData.premium) {
@@ -1166,7 +932,6 @@ class MobileContainer extends Component {
                   <Icon name="sidebar" />
                 </Menu.Item>
               </Menu.Menu>
-              <div className="dapparatusMobile">{dapparatus}</div>
             </Menu>
             <Heading mobile nftData={nftData} />
             {children}
@@ -1176,6 +941,7 @@ class MobileContainer extends Component {
     );
   }
 }
+
 // Handles favicon, background, and header for premium dApp
 const Heading = ({ mobile, nftData }) => {
   var link =
@@ -1283,13 +1049,12 @@ const Heading = ({ mobile, nftData }) => {
     return null;
   }
 };
+
 ResponsiveContainer.propTypes = {
   children: PropTypes.node,
-  dapparatus: PropTypes.object,
 };
 DesktopContainer.propTypes = {
   children: PropTypes.node,
-  dapparatus: PropTypes.object,
 };
 MobileContainer.propTypes = {
   children: PropTypes.node,
@@ -1313,6 +1078,7 @@ function translateEtherscan(network) {
   }
   return etherscan;
 }
+
 function getRegistryData(metaData, network) {
   let registryData = "(available only on mainnet)";
   if (metaData && metaData.data) {
