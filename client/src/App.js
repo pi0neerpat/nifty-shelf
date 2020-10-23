@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
 import {
   Grid,
   Message,
@@ -25,8 +25,8 @@ import {
   Card,
   Reveal,
   Sidebar,
-  Dropdown
-} from 'semantic-ui-react';
+  Dropdown,
+} from "semantic-ui-react";
 import {
   Dapparatus,
   Gas,
@@ -34,32 +34,32 @@ import {
   // Transactions,
   // Events,
   // Scaler,
-  Blockie
-} from 'dapparatus';
+  Blockie,
+} from "dapparatus";
 // import { DapparatusCustom } from './components/DapparatusCustom';
 // import ContractLoaderCustom from './components/ContractLoaderCustom';
-import TransactionsCustom from './components/transactionsCustom';
-import Scanner from './components/scanner';
-import Web3 from 'web3';
-import web3 from './ethereum/web3';
-import moment from 'moment';
-import _ from 'lodash';
-import PropTypes from 'prop-types';
-import { TwitterShareButton } from 'react-share';
+import TransactionsCustom from "./components/transactionsCustom";
+import Scanner from "./components/scanner";
+import Web3 from "web3";
+import web3 from "./ethereum/web3";
+import moment from "moment";
+import _ from "lodash";
+import PropTypes from "prop-types";
+import { TwitterShareButton } from "react-share";
 
 const METATX = {
-  endpoint: 'http://0.0.0.0:1001/',
-  contract: '0xf5bf6541843D2ba2865e9aeC153F28aaD96F6fbc'
+  endpoint: "http://0.0.0.0:1001/",
+  contract: "0xf5bf6541843D2ba2865e9aeC153F28aaD96F6fbc",
   // accountGenerator: '//account.metatx.io'
 };
-const WEB3_PROVIDER = 'https://ropsten.infura.io/UkZfSHYlZUsRnBPYPjTO';
+const WEB3_PROVIDER = "https://ropsten.infura.io/UkZfSHYlZUsRnBPYPjTO";
 // image assets
 // const chelseaHello = require('./assets/chelsea-hello.png');
 
-const axios = require('axios');
-const twitter = require('./assets/twitter.png');
-const user = require('./assets/user.png');
-const ethereum = require('./assets/ethereum.png');
+const axios = require("axios");
+const twitter = require("./assets/twitter.png");
+const user = require("./assets/user.png");
+const ethereum = require("./assets/ethereum.png");
 const github = require(`./assets/github.png`);
 const question = require(`./assets/question.png`);
 const exampleMobile = require(`./assets/exampleMobile.png`);
@@ -72,16 +72,16 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      abi: { abi: 'empty' },
-      abiRaw: '',
-      network: '',
-      requiredNetwork: '',
-      contractAddress: '',
-      getnftData: '',
+      abi: { abi: "empty" },
+      abiRaw: "",
+      network: "",
+      requiredNetwork: "",
+      contractAddress: "",
+      getnftData: "",
       errorMessage: false,
       loading: false,
       methodData: [],
-      mnemonic: '',
+      mnemonic: "",
       metaData: {},
       nftData: false,
       recentContracts: {},
@@ -89,9 +89,9 @@ class App extends Component {
       externalContracts: [],
       userHasBeenLoaded: false,
       activeIndex: [],
-      activeItem: 'write',
+      activeItem: "write",
       // ENS
-      ensSubnode: 'myDapp2',
+      ensSubnode: "myDapp2",
       ensFee: 0.01,
       existingSubnodes: [],
       //Search
@@ -107,7 +107,7 @@ class App extends Component {
       account: false,
       gwei: 4,
       doingTransaction: false,
-      customLoader: false
+      customLoader: false,
     };
   }
   componentDidMount = async () => {
@@ -120,38 +120,38 @@ class App extends Component {
   getNFT = () => {
     let userAddress = window.location.pathname.substring(1, 43);
     if (userAddress.length > 1) {
-      this.showLoading('downloading');
+      this.showLoading("downloading");
       this.setState({
         enableDapparatus: false,
         displayDappForm: false,
-        userAddress
+        userAddress,
       });
 
       axios
         .get(`https://api.opensea.io/api/v1/assets?owner=${userAddress}`)
-        .then(result => {
+        .then((result) => {
           // console.log(result);
           if (result.data.assets && result.data.assets.length < 1) {
             console.log(`Could not find any trophies for ${userAddress}`);
-            this.showLoading('not found');
+            this.showLoading("not found");
           } else {
             document.title = `Nifty Shelf: ${userAddress}`;
-            console.log('Open Sea API data: ');
+            console.log("Open Sea API data: ");
             console.log(result.data);
             let newData = result.data;
-            axios.get(`/shelf/${userAddress}`).then(result => {
-              newData.userAddress = userAddress;
-              newData.viewCount = result.data.viewCount;
-              this.setState({
-                displayLoading: false,
-                nftData: newData
-              });
+            newData.userAddress = userAddress;
+            this.setState({
+              displayLoading: false,
+              nftData: newData,
             });
+            // axios.get(`/shelf/${userAddress}`).then((result) => {
+            //   newData.viewCount = result.data.viewCount;
+            // });
           }
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(`Could not find any trophies for ${userAddress}`);
-          this.showLoading('not found');
+          this.showLoading("not found");
         });
       return true;
     } else {
@@ -166,7 +166,7 @@ class App extends Component {
     this.setState({ [name]: value });
     setTimeout(() => {
       //maybe they just scanned an address?
-      window.location = '/' + value;
+      window.location = "/" + value;
     }, 100);
   };
   handleInput(e) {
@@ -187,14 +187,14 @@ class App extends Component {
   handleSubmitSend = (e, { methodIndex }) => {
     const { methodData, abi, contractAddress, account } = this.state;
     // send() methods alter the contract state, and require gas.
-    console.log('Performing function #' + methodIndex + " 'send()'...");
-    this.setState({ errorMessage: '' });
+    console.log("Performing function #" + methodIndex + " 'send()'...");
+    this.setState({ errorMessage: "" });
     let newMethodData = methodData;
     const method = methodData[methodIndex];
     if (!method) {
-      this.setState({ errorMessage: 'You must enter some values' });
+      this.setState({ errorMessage: "You must enter some values" });
     } else {
-      console.log('method submitted' + JSON.stringify(method));
+      console.log("method submitted" + JSON.stringify(method));
       // Generate the contract object
       // TODO instead use the contract instance created during submitDapp()
       try {
@@ -205,20 +205,20 @@ class App extends Component {
         myContract.methods[method.name](...method.inputs)
           .send({
             from: account,
-            value: web3.utils.toWei(method.value || '0', 'ether')
+            value: web3.utils.toWei(method.value || "0", "ether"),
           })
-          .then(response => {
+          .then((response) => {
             // console.log('pass bool check' + typeof response);
-            if (typeof response === 'boolean') {
+            if (typeof response === "boolean") {
               newMethodData[methodIndex].outputs[0] = response.toString();
-            } else if (typeof response === 'object') {
+            } else if (typeof response === "object") {
               Object.entries(response).forEach(([key, value]) => {
                 newMethodData[methodIndex].outputs[key] = value.toString();
               });
             } else newMethodData[methodIndex].outputs[0] = response;
             this.setState({ methodData: newMethodData });
           })
-          .catch(err => {
+          .catch((err) => {
             this.setState({ errorMessage: err.message });
           });
       } catch (err) {
@@ -229,13 +229,13 @@ class App extends Component {
   handleSubmitCall = (e, { methodIndex }) => {
     // call() methods do not alter the contract state. No gas needed.
     const { abi, contractAddress, methodData } = this.state;
-    console.log('Performing function #' + methodIndex + " 'call()'...");
+    console.log("Performing function #" + methodIndex + " 'call()'...");
     let newMethodData = methodData;
-    this.setState({ errorMessage: '' });
+    this.setState({ errorMessage: "" });
     // note: only gets first method. There could be more with identical name
     // TODO fix this ^
     const method = methodData[methodIndex];
-    console.log('method submitted' + JSON.stringify(method));
+    console.log("method submitted" + JSON.stringify(method));
     let inputs = method.inputs || []; // return an empty array if no inputs exist
     // Generate the contract object
     // TODO instead use the contract instance created during submitDapp()
@@ -247,19 +247,19 @@ class App extends Component {
       // using "..." to destructure inputs[]
       myContract.methods[method.name](...inputs)
         .call({
-          from: this.state.account
+          from: this.state.account,
         })
-        .then(response => {
-          if (typeof response === 'boolean') {
+        .then((response) => {
+          if (typeof response === "boolean") {
             newMethodData[methodIndex].outputs[0] = response.toString();
-          } else if (typeof response === 'object') {
+          } else if (typeof response === "object") {
             Object.entries(response).forEach(([key, value]) => {
               newMethodData[methodIndex].outputs[key] = value.toString();
             });
           } else newMethodData[methodIndex].outputs[0] = response;
           this.setState({ methodData: newMethodData });
         })
-        .catch(err => {
+        .catch((err) => {
           this.setState({ errorMessage: err.message });
         });
     } catch (err) {
@@ -269,37 +269,37 @@ class App extends Component {
   handleCreateNewDapp = () => {
     this.setState({
       currentDappFormStep: 1,
-      enableDapparatus: true
+      enableDapparatus: true,
     });
     window.scrollTo(0, 0);
   };
   handleSubmitSuggestion = () => {
     axios
       .post(`/suggestion`, {
-        suggestion: this.state.suggestion
+        suggestion: this.state.suggestion,
       })
       .then(
         this.setState({
-          suggestionSubmitted: true
+          suggestionSubmitted: true,
         })
       )
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
       });
   };
-  showErrorMessage = type => {
+  showErrorMessage = (type) => {
     let message = <div />;
     if (this.state.errorMessage) {
-      if (type === 'popup') {
+      if (type === "popup") {
         message = (
           <div
             style={{
-              position: 'fixed',
+              position: "fixed",
               zIndex: 10,
               top: 60,
               left: 60,
               paddingRight: 60,
-              textAlign: 'left'
+              textAlign: "left",
             }}
           >
             <Message
@@ -326,9 +326,9 @@ class App extends Component {
     }
     return message;
   };
-  showLoading = action => {
+  showLoading = (action) => {
     let loading = false;
-    if (action === 'downloading') {
+    if (action === "downloading") {
       loading = (
         <div className="loadingDIV">
           <Icon.Group size="huge">
@@ -339,7 +339,7 @@ class App extends Component {
           <Image centered src={shelfLogo} size="large" />
         </div>
       );
-    } else if (action === 'not found') {
+    } else if (action === "not found") {
       loading = (
         <div className="dAppNotFound">
           <Container>
@@ -352,9 +352,7 @@ class App extends Component {
                 <br />
                 <h2>
                   <a
-                    href={`https://blockscout.com/eth/mainnet/address/${
-                      this.state.userAddress
-                    }`}
+                    href={`https://blockscout.com/eth/mainnet/address/${this.state.userAddress}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -400,7 +398,7 @@ class App extends Component {
                 textAlign="center"
               >
                 <Grid.Column textAlign="left">
-                  <p style={{ fontSize: '4em' }}>
+                  <p style={{ fontSize: "4em" }}>
                     NFT trophies...
                     <br />
                     on a shelf
@@ -413,7 +411,7 @@ class App extends Component {
                 <Grid.Row />
               </Grid>
               <Container>
-                <p style={{ textAlign: 'left', fontSize: '2em' }}>
+                <p style={{ textAlign: "left", fontSize: "2em" }}>
                   Enter an ETH address:
                 </p>
                 <Grid columns={2} textAlign="left">
@@ -438,12 +436,12 @@ class App extends Component {
                       centered={false}
                       closeIcon
                       style={{
-                        textAlign: 'left',
-                        paddingTop: '3rem'
+                        textAlign: "left",
+                        paddingTop: "3rem",
                       }}
                       trigger={
                         <Button
-                          style={{ textAlign: 'left' }}
+                          style={{ textAlign: "left" }}
                           size="huge"
                           icon="camera"
                           content="Scan QR"
@@ -456,8 +454,8 @@ class App extends Component {
                       <Modal.Content>
                         <Scanner
                           changeView={this.changeView}
-                          onError={error => {
-                            this.changeAlert('danger', error);
+                          onError={(error) => {
+                            this.changeAlert("danger", error);
                           }}
                         />
                       </Modal.Content>
@@ -465,8 +463,8 @@ class App extends Component {
                   </Grid.Column>
                 </Grid>
                 <Divider hidden />
-                <h4 style={{ textAlign: 'left' }}>
-                  No nifties?{' '}
+                <h4 style={{ textAlign: "left" }}>
+                  No nifties?{" "}
                   <a href="https://niftyshelf.com/0x0f48669b1681d41357eac232f516b77d0c10f0f1/">
                     See an example.
                   </a>
@@ -476,7 +474,7 @@ class App extends Component {
           </Responsive>
           <Responsive maxWidth={Responsive.onlyMobile.maxWidth}>
             <div className="homePageHeaderMobile">
-              <p style={{ fontSize: '3em' }}>
+              <p style={{ fontSize: "3em" }}>
                 NFT trophies...
                 <br />
                 on a shelf
@@ -484,7 +482,7 @@ class App extends Component {
               <Image
                 centered
                 src={shelfLogo}
-                style={{ paddingRight: '2rem', paddingLeft: '2rem' }}
+                style={{ paddingRight: "2rem", paddingLeft: "2rem" }}
               />
               <br />
               <br />
@@ -510,7 +508,7 @@ class App extends Component {
                   centered={false}
                   closeIcon
                   style={{
-                    paddingTop: '3rem'
+                    paddingTop: "3rem",
                   }}
                   trigger={
                     <Button fluid size="huge" icon="camera" content="Scan QR" />
@@ -521,14 +519,14 @@ class App extends Component {
                   <Modal.Content>
                     <Scanner
                       changeView={this.changeView}
-                      onError={error => {
-                        this.changeAlert('danger', error);
+                      onError={(error) => {
+                        this.changeAlert("danger", error);
                       }}
                     />
                   </Modal.Content>
                 </Modal>
-                <h4 style={{ textAlign: 'left' }}>
-                  No nifties?{' '}
+                <h4 style={{ textAlign: "left" }}>
+                  No nifties?{" "}
                   <a href="https://niftyshelf.com/0x0f48669b1681d41357eac232f516b77d0c10f0f1/">
                     See an example.
                   </a>
@@ -543,7 +541,7 @@ class App extends Component {
                   <h1>Do you build dApps?</h1>
                   <h3>
                     Check out our other free tool. Make a dApp in seconds,
-                    without writing any code{' '}
+                    without writing any code{" "}
                     <a href="https://OneClickdApp.com" target="blank">
                       OneClickdApp.com
                     </a>
@@ -568,7 +566,7 @@ class App extends Component {
             <h4>Nifty Shelf</h4>
             <List link>
               <List.Item
-                style={{ color: 'white' }}
+                style={{ color: "white" }}
                 as="a"
                 href="https://opensea.io"
                 target="blank"
@@ -576,7 +574,7 @@ class App extends Component {
                 Data by OpenSea.io
               </List.Item>
               <List.Item
-                style={{ color: 'white' }}
+                style={{ color: "white" }}
                 as="a"
                 href="mailto:blockchainbuddha@gmail.com?subject=Question%20about%20NiftyShelf.com"
                 target="_self"
@@ -589,7 +587,7 @@ class App extends Component {
             <h4>Other cool stuff</h4>
             <List link>
               <List.Item
-                style={{ color: 'white' }}
+                style={{ color: "white" }}
                 as="a"
                 href="https://oneclickdapp.com"
                 target="blank"
@@ -597,7 +595,7 @@ class App extends Component {
                 One Click dApp
               </List.Item>
               <List.Item
-                style={{ color: 'white' }}
+                style={{ color: "white" }}
                 as="a"
                 href="https://xdai.io"
                 target="blank"
@@ -638,14 +636,14 @@ class App extends Component {
   }
   renderInterface() {
     const { nftData, activeIndex } = this.state;
-    const errorMessage = this.showErrorMessage('popup');
+    const errorMessage = this.showErrorMessage("popup");
     let trophies = this.renderTrophies();
 
     return (
       <div
         style={{
-          paddingTop: '3em',
-          paddingBottom: '5em'
+          paddingTop: "3em",
+          paddingBottom: "5em",
         }}
       >
         <Grid stackable container columns={4} textAlign="center">
@@ -669,23 +667,21 @@ class App extends Component {
                 <Icon name="legal" size="large" />
               </Table.Cell>
               <Table.Cell textAlign="left">
-                Bought for{' '}
+                Bought for{" "}
                 {web3.utils
-                  .fromWei(trophy.last_sale.total_price, 'ether')
-                  .substring(0, 5)}{' '}
-                {trophy.last_sale.payment_token.symbol} from{' '}
+                  .fromWei(trophy.last_sale.total_price, "ether")
+                  .substring(0, 5)}{" "}
+                {trophy.last_sale.payment_token.symbol} from{" "}
                 {(
                   <a
-                    href={`https://blockscout.com/eth/mainnet/address/${
-                      trophy.last_sale.seller.address
-                    }`}
+                    href={`https://blockscout.com/eth/mainnet/address/${trophy.last_sale.seller.address}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     {trophy.last_sale.seller.address.substring(0, 6)}...
                     {trophy.last_sale.seller.address.substring(38, 50)}
                   </a>
-                ) || 'unknown'}
+                ) || "unknown"}
               </Table.Cell>
             </Table.Row>
           );
@@ -739,10 +735,10 @@ class App extends Component {
         }
         let trophyName =
           trophy.name ||
-          trophy.asset_contract.name + ' #' + trophy.token_id ||
-          'unknown';
-        if (trophy.asset_contract.name === '' && trophy.name === null) {
-          trophyName = 'unknown #' + trophy.token_id;
+          trophy.asset_contract.name + " #" + trophy.token_id ||
+          "unknown";
+        if (trophy.asset_contract.name === "" && trophy.name === null) {
+          trophyName = "unknown #" + trophy.token_id;
         }
         displayTrophies.push(
           <Accordion
@@ -750,17 +746,17 @@ class App extends Component {
             verticalAlign="bottom"
             key={index}
             style={{
-              textAlign: 'center',
-              height: '100%',
-              paddingBottom: '7rem',
-              zIndex: 100 - index
+              textAlign: "center",
+              height: "100%",
+              paddingBottom: "7rem",
+              zIndex: 100 - index,
             }}
           >
             <Modal
               centered={false}
               closeIcon
               style={{
-                paddingTop: '3rem'
+                paddingTop: "3rem",
               }}
               trigger={
                 <Image
@@ -769,8 +765,8 @@ class App extends Component {
                   as={Card}
                   link
                   style={{
-                    height: '100%',
-                    background: '#c2cafc'
+                    height: "100%",
+                    background: "#c2cafc",
                   }}
                 />
               }
@@ -778,7 +774,7 @@ class App extends Component {
             >
               <Header
                 content={
-                  trophy.name || 'unknown ' + trophy.token_id || '(unknown)'
+                  trophy.name || "unknown " + trophy.token_id || "(unknown)"
                 }
               />
               <Modal.Content>
@@ -791,10 +787,10 @@ class App extends Component {
               raised
               centered
               style={{
-                position: 'absolute',
-                left: '50%',
-                marginLeft: '-140px',
-                width: '280px'
+                position: "absolute",
+                left: "50%",
+                marginLeft: "-140px",
+                width: "280px",
               }}
             >
               <Card.Content>
@@ -805,8 +801,8 @@ class App extends Component {
                 >
                   <Header
                     style={{
-                      wordWrap: 'break-word',
-                      textAlign: 'center'
+                      wordWrap: "break-word",
+                      textAlign: "center",
                     }}
                   >
                     {trophyName}
@@ -831,9 +827,7 @@ class App extends Component {
                           </Table.Cell>
                           <Table.Cell>
                             <a
-                              href={`https://blockscout.com/eth/mainnet/address/${
-                                trophy.asset_contract.address
-                              }`}
+                              href={`https://blockscout.com/eth/mainnet/address/${trophy.asset_contract.address}`}
                               target="_blank"
                               rel="noopener noreferrer"
                             >
@@ -858,7 +852,7 @@ class App extends Component {
               <Image
                 centered
                 src={basicShelfSmall}
-                style={{ paddingTop: '6rem' }}
+                style={{ paddingTop: "6rem" }}
               />
             </Grid.Row>
           </Responsive>
@@ -886,17 +880,17 @@ class App extends Component {
 
       displayDappForm,
       displayLoading,
-      enableDapparatus
+      enableDapparatus,
     } = this.state;
     let connectedDisplay = [];
     if (web3 && !displayDappForm) {
       connectedDisplay.push(
         <Gas
           key="Gas"
-          onUpdate={state => {
-            console.log('Gas price update:', state);
+          onUpdate={(state) => {
+            console.log("Gas price update:", state);
             this.setState(state, () => {
-              console.log('GWEI set:', this.state.gwei);
+              console.log("GWEI set:", this.state.gwei);
             });
           }}
         />
@@ -970,12 +964,12 @@ class App extends Component {
             block={block}
             avgBlockTime={avgBlockTime}
             etherscan={etherscan}
-            onReady={state => {
-              console.log('Transactions component is ready:', state);
+            onReady={(state) => {
+              console.log("Transactions component is ready:", state);
               this.setState(state);
             }}
             onReceipt={(transaction, receipt) => {
-              console.log('Transaction Receipt', transaction, receipt);
+              console.log("Transaction Receipt", transaction, receipt);
             }}
           />
         </Responsive>
@@ -990,21 +984,21 @@ class App extends Component {
             requiredNetwork: this.state.requiredNetwork,
             hide: displayDappForm,
             textStyle: {
-              color: '#000000'
+              color: "#000000",
             },
             warningStyle: {
               fontSize: 20,
-              color: '#d31717'
+              color: "#d31717",
             },
             blockieStyle: {
               size: 5,
-              top: 0
-            }
+              top: 0,
+            },
           }}
           metatx={METATX}
           fallbackWeb3Provider={new Web3.providers.HttpProvider(WEB3_PROVIDER)}
-          onUpdate={state => {
-            console.log('dapparatus state update:', state);
+          onUpdate={(state) => {
+            console.log("dapparatus state update:", state);
             if (state.web3Provider) {
               state.web3 = new Web3(state.web3Provider);
               this.setState(state);
@@ -1164,7 +1158,7 @@ class MobileContainer extends Component {
           <Sidebar.Pusher
             dimmed={sidebarOpened}
             onClick={this.handlePusherClick}
-            style={{ minHeight: '100vh' }}
+            style={{ minHeight: "100vh" }}
           >
             <Menu borderless size="large">
               <Menu.Menu className="topMenu" style={{ backgroundColor }}>
@@ -1186,29 +1180,29 @@ class MobileContainer extends Component {
 const Heading = ({ mobile, nftData }) => {
   var link =
     document.querySelector("link[rel*='icon']") ||
-    document.createElement('link');
-  link.type = 'image/x-icon';
-  link.rel = 'shortcut icon';
+    document.createElement("link");
+  link.type = "image/x-icon";
+  link.rel = "shortcut icon";
   link.href = nftData.favicon;
-  document.getElementsByTagName('head')[0].appendChild(link);
-  document.body.style.background = '#c2cafc';
+  document.getElementsByTagName("head")[0].appendChild(link);
+  document.body.style.background = "#c2cafc";
   // document.body.style.backgroundAttachment = 'fixed';
 
   if (nftData.assets && nftData.assets.length > 0) {
-    const etherscan = ''; //translateEtherscan(nftData.network[0]);
+    const etherscan = ""; //translateEtherscan(nftData.network[0]);
     const displayRegistryData = getRegistryData(
       nftData.metaData,
       nftData.network
     );
     let displayTitle = (
-      <Header as="h1" style={{ wordWrap: 'break-word' }}>
+      <Header as="h1" style={{ wordWrap: "break-word" }}>
         {nftData.userAddress}
       </Header>
     );
     if (nftData.assets[0].owner.user && nftData.assets[0].owner.user.username) {
       displayTitle = (
-        <Header as="h1" style={{ wordWrap: 'break-word' }}>
-          {nftData.assets[0].owner.user.username}'s Trophies{' '}
+        <Header as="h1" style={{ wordWrap: "break-word" }}>
+          {nftData.assets[0].owner.user.username}'s Trophies{" "}
         </Header>
       );
     }
@@ -1218,7 +1212,7 @@ const Heading = ({ mobile, nftData }) => {
           stackable
           columns={2}
           style={{
-            paddingTop: mobile ? '1em' : '2em'
+            paddingTop: mobile ? "1em" : "2em",
           }}
         >
           <Grid.Row textAlign="center" verticalAlign="middle">
@@ -1226,11 +1220,9 @@ const Heading = ({ mobile, nftData }) => {
               {displayTitle}
               <Container>
                 <TwitterShareButton
-                  title={`Check out my cool Nifty trophies! niftyshelf.com/${
-                    nftData.userAddress
-                  }`}
+                  title={`Check out my cool Nifty trophies! niftyshelf.com/${nftData.userAddress}`}
                   url={`niftyshelf.com/${nftData.userAddress}`}
-                  hashtags={['NFT', 'ERC721', 'NiftyShelf']}
+                  hashtags={["NFT", "ERC721", "NiftyShelf"]}
                 >
                   <Button secondary>
                     <Image inline src={twitter} size="mini" /> Make 'em jealous
@@ -1247,9 +1239,7 @@ const Heading = ({ mobile, nftData }) => {
                     </Table.Cell>
                     <Table.Cell>
                       <a
-                        href={`https://blockscout.com/eth/mainnet/address/${
-                          nftData.userAddress
-                        }`}
+                        href={`https://blockscout.com/eth/mainnet/address/${nftData.userAddress}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -1295,36 +1285,36 @@ const Heading = ({ mobile, nftData }) => {
 };
 ResponsiveContainer.propTypes = {
   children: PropTypes.node,
-  dapparatus: PropTypes.object
+  dapparatus: PropTypes.object,
 };
 DesktopContainer.propTypes = {
   children: PropTypes.node,
-  dapparatus: PropTypes.object
+  dapparatus: PropTypes.object,
 };
 MobileContainer.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 Heading.propTypes = {
-  mobile: PropTypes.bool
+  mobile: PropTypes.bool,
 };
 
 function translateEtherscan(network) {
-  let etherscan = 'https://etherscan.io/';
+  let etherscan = "https://etherscan.io/";
   if (network) {
-    if (network === 'Unknown' || network === 'private') {
-      etherscan = 'http://localhost:8000/#/';
-    } else if (network === 'POA') {
-      etherscan = 'https://blockscout.com/poa/core/';
-    } else if (network === 'xDai') {
-      etherscan = 'https://blockscout.com/poa/dai/';
-    } else if (network !== 'Mainnet') {
-      etherscan = 'https://' + network + '.etherscan.io/';
+    if (network === "Unknown" || network === "private") {
+      etherscan = "http://localhost:8000/#/";
+    } else if (network === "POA") {
+      etherscan = "https://blockscout.com/poa/core/";
+    } else if (network === "xDai") {
+      etherscan = "https://blockscout.com/poa/dai/";
+    } else if (network !== "Mainnet") {
+      etherscan = "https://" + network + ".etherscan.io/";
     }
   }
   return etherscan;
 }
 function getRegistryData(metaData, network) {
-  let registryData = '(available only on mainnet)';
+  let registryData = "(available only on mainnet)";
   if (metaData && metaData.data) {
     registryData = (
       <div>
@@ -1337,7 +1327,7 @@ function getRegistryData(metaData, network) {
               compact
               size="tiny"
               onClick={() => {
-                window.open(metaData.data.metadata.url, '_blank');
+                window.open(metaData.data.metadata.url, "_blank");
               }}
             >
               <Image inline size="mini" src={metaData.data.metadata.logo} />
@@ -1383,7 +1373,7 @@ function getRegistryData(metaData, network) {
               </Table.Row>
             </Table.Body>
           </Table>
-          Metadata powered by{' '}
+          Metadata powered by{" "}
           <a
             target="_blank"
             rel="noopener noreferrer"
@@ -1394,10 +1384,10 @@ function getRegistryData(metaData, network) {
         </Popup>
       </div>
     );
-  } else if (network === 'Mainnet') {
+  } else if (network === "Mainnet") {
     registryData = (
       <div>
-        Metadata: Nothing found. Add it to{' '}
+        Metadata: Nothing found. Add it to{" "}
         <a
           target="_blank"
           rel="noopener noreferrer"
