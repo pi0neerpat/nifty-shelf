@@ -135,7 +135,6 @@ class App extends Component {
       return true;
     } else {
       return false;
-      // this.handleChangeABI({}, { value: this.state.abiRaw });
     }
   };
   handleChange = (e, { name, value }) => {
