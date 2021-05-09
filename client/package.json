@@ -8,7 +8,7 @@
     "axios": "^0.18.0",
     "deepmerge": "^4.2.2",
     "jimp": "^0.6.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "prop-types": "^15.6.2",
     "qrcode-reader": "^1.0.4",
